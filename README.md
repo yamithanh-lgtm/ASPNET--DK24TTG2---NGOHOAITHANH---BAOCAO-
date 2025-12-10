@@ -9,24 +9,6 @@ Repo được quản lý theo yêu cầu của môn học:
 - Cập nhật README.md trong suốt quá trình làm đồ án
 - Commit tối thiểu mỗi tuần 1 lần
 
----
-
-## 📂 Cấu trúc dự án (ASP.NET)
-```
-project/
-│── Controllers/
-│── Models/
-│── Views/
-│── wwwroot/
-│── appsettings.json
-│── Program.cs
-│── README.md
-```
-
----
-
-## 🚀 Cách chạy dự án ASP.NET
-
 ### 1️⃣ Yêu cầu môi trường
 - .NET SDK (phiên bản 6.0 hoặc 7.0)
 - Visual Studio 2022 hoặc VS Code
