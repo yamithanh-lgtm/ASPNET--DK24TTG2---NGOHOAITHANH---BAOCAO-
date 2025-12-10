@@ -16,7 +16,7 @@ Repo được quản lý theo yêu cầu của môn học:
 Dự án sẽ chạy tại:
 localhost
 
-## 🧪 Tiến độ thực hiện
+## 🧪 Tiến độ học
 - [x] Tạo repository  
 - [x] Tạo README cơ bản  
 - [x] Tuần 1 (23/11-30/11 2025) – Bài 1: Giới thiệu về ASP.NET - Bài 2: Giới thiệu ngôn ngữ lập trình C Sharp  
@@ -27,7 +27,7 @@ localhost
 - [ ] Tuần 6 (29/12-04/01 2026) – Bài 7: Sử dụng web services trong ứng dụng ASP.NET
 - [ ] Tuần 7 (05/01-11/01 2026) – Nộp Báo Cáo
 
-## ✨ Chức năng dự kiến (cập nhật trong quá trình làm)
+## ✨ Tiến độ thực hiện và chức năng dự kiến (cập nhật trong quá trình làm)
 - [ ] Tạo giao diện người dùng nghe nhạc
 - [ ] Xử lý MVC
 - [ ] Kết nối Database
