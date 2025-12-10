@@ -11,7 +11,7 @@ Repo được quản lý theo yêu cầu của môn học:
 
 ### 1️⃣ Yêu cầu môi trường
 - .NET SDK (phiên bản 6.0 hoặc 7.0)
-- Visual Studio 2022 hoặc VS Code
+- Visual Studio 2022 hoặc VS Code 
 
 Dự án sẽ chạy tại:
 localhost
