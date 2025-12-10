@@ -1,2 +1,66 @@
-# ASPNET--DK24TTG2---NGOHOAITHANH---BAOCAO-
-Bao Cao Mon ASP
+# 📘 ĐỒ ÁN ASP.NET - README
+
+## 📌 Giới thiệu
+Báo cáo tiến độ dự án ASP.NET
+
+Repo được quản lý theo yêu cầu của môn học:
+- Tạo Repository theo đúng cú pháp
+- Mời giảng viên làm Collaborator
+- Cập nhật README.md trong suốt quá trình làm đồ án
+- Commit tối thiểu mỗi tuần 1 lần
+
+---
+
+## 📂 Cấu trúc dự án (ASP.NET)
+```
+project/
+│── Controllers/
+│── Models/
+│── Views/
+│── wwwroot/
+│── appsettings.json
+│── Program.cs
+│── README.md
+```
+
+---
+
+## 🚀 Cách chạy dự án ASP.NET
+
+### 1️⃣ Yêu cầu môi trường
+- .NET SDK (phiên bản 6.0 hoặc 7.0)
+- Visual Studio 2022 hoặc VS Code
+
+Dự án sẽ chạy tại:
+localhost
+
+## 🧪 Tiến độ thực hiện
+- [x] Tạo repository  
+- [x] Tạo README cơ bản  
+- [x] Tuần 1 (23/11-30/11 2025) – Bài 1: Giới thiệu về ASP.NET - Bài 2: Giới thiệu ngôn ngữ lập trình C Sharp  
+- [x] Tuần 2 (01/12-07/12 2025) – Bài 3: Sử dụng các controls của ASP.NET 
+- [x] Tuần 3 (08/12-14/12 2025) – Bài 3: Sử dụng các controls của ASP.NET (tiếp theo) - Bài 4: Quản lý trạng thái và các đối tượng của ASP.NET 
+- [ ] Tuần 4 (15/12-21/12 2025) – Bài 5: Làm việc ADO.NET và các đối tượng truy cập CSDL
+- [ ] Tuần 5 (22/12-28/12 2025)- Bài 6: Làm việc với XML
+- [ ] Tuần 6 (29/12-04/01 2026)- Bài 7: Sử dụng web services trong ứng dụng ASP.NET
+- [ ] Tuần 7 (05/01-11/01 2026)- Nộp Báo Cáo
+
+## ✨ Chức năng dự kiến (cập nhật trong quá trình làm)
+- [ ] Tạo giao diện người dùng nghe nhạc
+- [ ] Xử lý MVC
+- [ ] Kết nối Database
+- [ ] Chức năng CRUD
+- [ ] Hoàn thiện UI/UX
+- [ ] Hoàn thiện báo cáo
+
+## 📬 Liên hệ
+**Sinh viên thực hiện:**  
+Họ tên: Ngô Hoài Thanh  
+MSSV: 170124251
+Lớp: DK24TTG2
+Email: thanhnh101094@tvu-onschool.edu.vn
+
+## 🤝 Cộng tác
+Giảng viên hướng dẫn  
+📧 **antonio86doan@gmail.com**  
+Đã được mời làm Collaborator theo yêu cầu môn học.
