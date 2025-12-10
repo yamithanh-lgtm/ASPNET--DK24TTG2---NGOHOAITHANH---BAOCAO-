@@ -23,9 +23,9 @@ localhost
 - [x] Tuần 2 (01/12-07/12 2025) – Bài 3: Sử dụng các controls của ASP.NET 
 - [x] Tuần 3 (08/12-14/12 2025) – Bài 3: Sử dụng các controls của ASP.NET (tiếp theo) - Bài 4: Quản lý trạng thái và các đối tượng của ASP.NET 
 - [ ] Tuần 4 (15/12-21/12 2025) – Bài 5: Làm việc ADO.NET và các đối tượng truy cập CSDL
-- [ ] Tuần 5 (22/12-28/12 2025)- Bài 6: Làm việc với XML
-- [ ] Tuần 6 (29/12-04/01 2026)- Bài 7: Sử dụng web services trong ứng dụng ASP.NET
-- [ ] Tuần 7 (05/01-11/01 2026)- Nộp Báo Cáo
+- [ ] Tuần 5 (22/12-28/12 2025) – Bài 6: Làm việc với XML
+- [ ] Tuần 6 (29/12-04/01 2026) – Bài 7: Sử dụng web services trong ứng dụng ASP.NET
+- [ ] Tuần 7 (05/01-11/01 2026) – Nộp Báo Cáo
 
 ## ✨ Chức năng dự kiến (cập nhật trong quá trình làm)
 - [ ] Tạo giao diện người dùng nghe nhạc
