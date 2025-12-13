@@ -49,7 +49,7 @@
 - ⏳ Quản lý thể loại (chưa hoàn thành)
 - ⏳ Quản lý playlist nổi bật (chưa hoàn thành)
 
-### 🎨 UI/UX Features (100%)
+### 🎨 UI/UX Features (80%)
 - ✅ Theme tối hiện đại
 - ✅ Gradient backgrounds
 - ✅ Glassmorphism effects
@@ -289,6 +289,7 @@ Nếu gặp vấn đề, tham khảo:
 3. Code comments - Giải thích trong code
 
 **Chúc bạn sử dụng vui vẻ! 🎵🎶**
+
 
 
 
