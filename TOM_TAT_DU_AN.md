@@ -64,7 +64,6 @@
 ```
 NgoHoaiThanh/
 ├── Database.sql                          # ✅ SQL Script
-├── HUONG_DAN_CAI_DAT_SQL.md             # ✅ Hướng dẫn SQL
 └── MusicStreaming/
     ├── README.md                         # ✅ Hướng dẫn dự án
     ├── Program.cs                        # ✅ Entry point
@@ -289,6 +288,7 @@ Nếu gặp vấn đề, tham khảo:
 3. Code comments - Giải thích trong code
 
 **Chúc bạn sử dụng vui vẻ! 🎵🎶**
+
 
 
 
