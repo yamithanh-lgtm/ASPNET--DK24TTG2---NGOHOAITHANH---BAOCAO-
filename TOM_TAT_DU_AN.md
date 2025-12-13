@@ -132,7 +132,7 @@ sqlcmd -S localhost -i Database.sql
 
 ### Bước 3: Chạy ứng dụng
 ```bash
-cd C:\Users\Kai\Downloads\NgoHoaiThanh\MusicStreaming
+cd C:\Users\Thanh\Project\MusicStreaming
 dotnet restore
 dotnet build
 dotnet run
@@ -288,6 +288,7 @@ Nếu gặp vấn đề, tham khảo:
 3. Code comments - Giải thích trong code
 
 **Chúc bạn sử dụng vui vẻ! 🎵🎶**
+
 
 
 
