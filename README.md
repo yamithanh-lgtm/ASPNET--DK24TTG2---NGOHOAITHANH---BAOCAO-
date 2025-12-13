@@ -10,7 +10,7 @@ Repo được quản lý theo yêu cầu của môn học:
 - Commit tối thiểu mỗi tuần 1 lần
 
 ### 1️⃣ Yêu cầu môi trường
-- .NET SDK (phiên bản 6.0 hoặc 7.0)
+- .NET SDK (phiên bản 8.0)
 - Visual Studio 2022 hoặc VS Code 
 
 Dự án sẽ chạy tại:
