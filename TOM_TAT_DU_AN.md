@@ -5,7 +5,7 @@
 - **Tên dự án**: Music Streaming Website
 - **Công nghệ**: ASP.NET MVC (.NET 8.0) + SQL Server
 - **Ngày tạo**: 04/12/2025
-- **Trạng thái**: ✅ Hoàn thành
+- **Trạng thái**: ✅ Chưa hoàn thiện
 
 ## 📊 Thống kê dự án
 
@@ -297,4 +297,5 @@ Dự án **Music Streaming Website** đã hoàn thành với:
 - ✅ Ready to deploy
 
 **Chúc bạn sử dụng vui vẻ! 🎵🎶**
+
 
