@@ -28,7 +28,6 @@ localhost
 - [ ] Tuần 7 (05/01-11/01 2026) – Nộp Báo Cáo
 
 ## ✨ Tiến độ thực hiện và chức năng dự kiến (cập nhật trong quá trình làm)
-https://github.com/yamithanh-lgtm/ASPNET--DK24TTG2---NGOHOAITHANH---BAOCAO-/blob/102ef8258884a1c6bd44e35ac6a3be36c7390f76/progress-report
 - [ ] Tạo giao diện người dùng nghe nhạc
 - [ ] Xử lý MVC
 - [ ] Kết nối Database
