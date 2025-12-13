@@ -285,8 +285,7 @@ dotnet run
 ## 📞 Support
 
 Nếu gặp vấn đề, tham khảo:
-1. `README.md` - Hướng dẫn tổng quan
-2. `HUONG_DAN_CAI_DAT_SQL.md` - Hướng dẫn SQL Server
+1. `README.md` - Báo Cáo tổng hợp
 3. Code comments - Giải thích trong code
 
 ## 🎉 Kết luận
@@ -298,3 +297,4 @@ Dự án **Music Streaming Website** đã hoàn thành với:
 - ✅ Ready to deploy
 
 **Chúc bạn sử dụng vui vẻ! 🎵🎶**
+
