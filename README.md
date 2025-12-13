@@ -28,10 +28,10 @@ localhost
 - [ ] Tuần 7 (05/01-11/01 2026) – Nộp Báo Cáo
 
 ## ✨ Tiến độ thực hiện và chức năng dự kiến (cập nhật trong quá trình làm)
-- [ ] Tạo giao diện người dùng nghe nhạc
-- [ ] Xử lý MVC
-- [ ] Kết nối Database
-- [ ] Chức năng CRUD
+- [x] Tạo giao diện người dùng nghe nhạc
+- [x] Xử lý MVC
+- [x] Kết nối Database
+- [x] Chức năng CRUD
 - [ ] Hoàn thiện UI/UX
 - [ ] Hoàn thiện báo cáo
 
