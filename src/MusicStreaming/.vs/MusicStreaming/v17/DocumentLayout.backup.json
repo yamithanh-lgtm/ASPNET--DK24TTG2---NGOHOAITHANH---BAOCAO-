@@ -1,0 +1,121 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\inetpub\\wwwroot\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|c:\\users\\administrator\\desktop\\ngohoaithanh\\musicstreaming\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|solutionrelative:views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|c:\\users\\administrator\\desktop\\ngohoaithanh\\musicstreaming\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|c:\\users\\administrator\\desktop\\ngohoaithanh\\musicstreaming\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|c:\\users\\administrator\\desktop\\ngohoaithanh\\musicstreaming\\controllers\\artistscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|solutionrelative:controllers\\artistscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|c:\\users\\administrator\\desktop\\ngohoaithanh\\musicstreaming\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3999F247-4EFA-FBA6-60F2-0BCD498FFA4C}|MusicStreaming.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "Views\\Account\\Login.cshtml",
+              "ToolTip": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAADAAAAAAAAAAAIAwwEUAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-29T12:38:46.872Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\README.md",
+              "RelativeDocumentMoniker": "README.md",
+              "ToolTip": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\README.md*",
+              "RelativeToolTip": "README.md*",
+              "ViewState": "AgIAAGcAAAAAAAAAAADgv3oAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-12-29T12:37:52.402Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAiwBYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-29T12:31:09.967Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ArtistsController.cs",
+              "DocumentMoniker": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\Controllers\\ArtistsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ArtistsController.cs",
+              "ToolTip": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\Controllers\\ArtistsController.cs",
+              "RelativeToolTip": "Controllers\\ArtistsController.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAADwvx4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-29T12:31:07.78Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\Administrator\\Desktop\\NgoHoaiThanh\\MusicStreaming\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAABmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-29T12:29:39.362Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "web.config",
+              "DocumentMoniker": "C:\\inetpub\\wwwroot\\web.config",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\inetpub\\wwwroot\\web.config",
+              "ToolTip": "C:\\inetpub\\wwwroot\\web.config",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\inetpub\\wwwroot\\web.config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2025-12-29T12:15:46.378Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

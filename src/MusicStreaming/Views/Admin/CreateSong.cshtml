@@ -1,0 +1,252 @@
+@model MusicStreaming.Models.Song
+
+@{
+    ViewData["Title"] = "Thêm bài hát mới";
+    var artists = ViewBag.Artists as List<MusicStreaming.Models.Artist>;
+    var genres = ViewBag.Genres as List<MusicStreaming.Models.Genre>;
+    var albums = ViewBag.Albums as List<MusicStreaming.Models.Album>;
+}
+
+<div class="container mt-4">
+    <div class="section-header mb-4">
+        <div>
+            <h1 class="section-title"><i class="fas fa-plus-circle"></i> Thêm bài hát mới</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Songs">Bài hát</a></li>
+                    <li class="breadcrumb-item active">Thêm mới</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <form asp-action="CreateSong" method="post" enctype="multipart/form-data" id="createSongForm">
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <!-- Left Column - Main Info -->
+            <div class="col-lg-8">
+                <div class="card glass-effect mb-4">
+                    <div class="card-header bg-transparent border-secondary">
+                        <h5 class="mb-0"><i class="fas fa-info-circle"></i> Thông tin bài hát</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="SongName" class="form-label">
+                                Tên bài hát <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="SongName" name="SongName" required autofocus>
+                            <span asp-validation-for="SongName" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="ArtistId" class="form-label">
+                                    Nghệ sĩ <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="ArtistId" name="ArtistId" required>
+                                    <option value="">-- Chọn nghệ sĩ --</option>
+                                    @if (artists != null)
+                                    {
+                                        foreach (var artist in artists)
+                                        {
+                                            <option value="@artist.ArtistId">@artist.ArtistName</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="ArtistId" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="GenreId" class="form-label">Thể loại</label>
+                                <select class="form-select" id="GenreId" name="GenreId">
+                                    <option value="">-- Chọn thể loại --</option>
+                                    @if (genres != null)
+                                    {
+                                        foreach (var genre in genres)
+                                        {
+                                            <option value="@genre.GenreId">@genre.GenreName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="AlbumId" class="form-label">Album</label>
+                                <select class="form-select" id="AlbumId" name="AlbumId">
+                                    <option value="">-- Chọn album --</option>
+                                    @if (albums != null)
+                                    {
+                                        foreach (var album in albums)
+                                        {
+                                            <option value="@album.AlbumId">@album.AlbumName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="Duration" class="form-label">Thời lượng</label>
+                                <input type="text" class="form-control" id="Duration" name="Duration" 
+                                       placeholder="VD: 03:45">
+                                <small class="text-muted">Định dạng: mm:ss</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ReleaseDate" class="form-label">Ngày phát hành</label>
+                            <input type="date" class="form-control" id="ReleaseDate" name="ReleaseDate">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Lyrics" class="form-label">Lời bài hát</label>
+                            <textarea class="form-control" id="Lyrics" name="Lyrics" rows="8" 
+                                      placeholder="Nhập lời bài hát..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Files -->
+            <div class="col-lg-4">
+                <!-- Audio File -->
+                <div class="card glass-effect mb-4">
+                    <div class="card-header bg-transparent border-secondary">
+                        <h5 class="mb-0"><i class="fas fa-file-audio"></i> File âm thanh</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="audioFile" class="form-label">
+                                Upload file audio <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control" id="audioFile" name="audioFile" 
+                                   accept="audio/*" required onchange="previewAudio(this)">
+                            <small class="text-muted">MP3, WAV, OGG. Tối đa 100MB</small>
+                        </div>
+
+                        <div id="audioPreview" style="display: none;">
+                            <p class="text-muted mb-2">Xem trước:</p>
+                            <audio id="audioPlayer" controls class="w-100"></audio>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cover Image -->
+                <div class="card glass-effect mb-4">
+                    <div class="card-header bg-transparent border-secondary">
+                        <h5 class="mb-0"><i class="fas fa-image"></i> Ảnh bìa</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="coverImage" class="form-label">Upload ảnh bìa</label>
+                            <input type="file" class="form-control" id="coverImage" name="coverImage" 
+                                   accept="image/*" onchange="previewImage(this)">
+                            <small class="text-muted">JPG, PNG. Tối đa 5MB</small>
+                        </div>
+
+                        <div id="imagePreview" style="display: none;">
+                            <p class="text-muted mb-2">Xem trước:</p>
+                            <img id="preview" src="" alt="Preview" class="img-fluid rounded">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card glass-effect">
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="fas fa-save"></i> Thêm bài hát
+                        </button>
+                        <a asp-action="Songs" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-times"></i> Hủy
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function previewImage(input) {
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+
+        function previewAudio(input) {
+            const audioPlayer = document.getElementById('audioPlayer');
+            const previewContainer = document.getElementById('audioPreview');
+            
+            if (input.files && input.files[0]) {
+                const url = URL.createObjectURL(input.files[0]);
+                audioPlayer.src = url;
+                previewContainer.style.display = 'block';
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+
+        // Form validation
+        document.getElementById('createSongForm').addEventListener('submit', function(e) {
+            const audioFile = document.getElementById('audioFile').files[0];
+            const coverImage = document.getElementById('coverImage').files[0];
+
+            // Check audio file size (100MB)
+            if (audioFile && audioFile.size > 100 * 1024 * 1024) {
+                e.preventDefault();
+                alert('File audio quá lớn! Vui lòng chọn file nhỏ hơn 100MB.');
+                return false;
+            }
+
+            // Check image file size (5MB)
+            if (coverImage && coverImage.size > 5 * 1024 * 1024) {
+                e.preventDefault();
+                alert('File ảnh quá lớn! Vui lòng chọn file nhỏ hơn 5MB.');
+                return false;
+            }
+        });
+    </script>
+}
+
+<style>
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    
+    .breadcrumb-item.active {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(29, 185, 84, 0.25);
+    }
+
+    #preview {
+        max-height: 300px;
+        border: 2px solid var(--primary-color);
+    }
+</style>

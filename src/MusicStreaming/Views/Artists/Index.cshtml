@@ -1,0 +1,42 @@
+@model IEnumerable<MusicStreaming.Models.Artist>
+
+@{
+    ViewData["Title"] = "Nghệ sĩ";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 fw-bold"><i class="fas fa-microphone-alt text-primary me-2"></i> Nghệ sĩ</h2>
+    
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <a asp-action="Details" asp-route-id="@item.ArtistId" class="text-decoration-none">
+                    <div class="card h-100 border-0 shadow-sm hover-card bg-transparent">
+                        <div class="text-center p-3">
+                            <img src="@(item.ImageUrl ?? "/images/default-artist.jpg")" 
+                                 class="rounded-circle shadow-sm" 
+                                 alt="@item.ArtistName"
+                                 style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                        <div class="card-body text-center pt-0">
+                            <h5 class="card-title fw-bold text-dark text-truncate">@item.ArtistName</h5>
+                            <p class="card-text text-muted small">Nghệ sĩ</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.2s, background-color 0.2s;
+        border-radius: 10px;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        background-color: rgba(0,0,0,0.03) !important;
+    }
+</style>

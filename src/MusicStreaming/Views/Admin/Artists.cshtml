@@ -1,0 +1,164 @@
+@model List<MusicStreaming.Models.Artist>
+
+@{
+    ViewData["Title"] = "Quản lý nghệ sĩ";
+}
+
+<div class="container mt-4">
+    <div class="section-header mb-4">
+        <div>
+            <h1 class="section-title"><i class="fas fa-microphone"></i> Quản lý nghệ sĩ</h1>
+            <p class="section-subtitle">Tổng số: @Model.Count nghệ sĩ</p>
+        </div>
+        <div>
+            <a asp-action="CreateArtist" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Thêm nghệ sĩ mới
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var artist in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card glass-effect h-100 artist-card">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <img src="@(artist.ImageUrl ?? "/images/default-artist.jpg")" 
+                                     alt="@artist.ArtistName" 
+                                     class="artist-image mb-3"
+                                     onerror="this.src='/images/default-artist.jpg'">
+                                <h5 class="card-title mb-2">@artist.ArtistName</h5>
+                                <p class="text-muted small mb-2">
+                                    <i class="fas fa-calendar"></i> 
+                                    Tham gia: @artist.CreatedDate.ToString("dd/MM/yyyy")
+                                </p>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(artist.Biography))
+                            {
+                                <p class="card-text text-muted small bio-text">
+                                    @(artist.Biography.Length > 100 ? artist.Biography.Substring(0, 100) + "..." : artist.Biography)
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="card-text text-muted small fst-italic">Chưa có tiểu sử</p>
+                            }
+
+                            <div class="d-flex gap-2 justify-content-center mt-3">
+                                <a href="#" class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a asp-action="EditArtist" asp-route-id="@artist.ArtistId" class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                        onclick="confirmDelete(@artist.ArtistId, '@artist.ArtistName')"
+                                        title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card glass-effect">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-microphone-slash fa-4x mb-3" style="color: rgba(255,255,255,0.3);"></i>
+                <h4>Chưa có nghệ sĩ nào</h4>
+                <p class="text-muted">Hãy thêm nghệ sĩ đầu tiên để bắt đầu</p>
+                <a asp-action="CreateArtist" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus"></i> Thêm nghệ sĩ mới
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-warning"></i> Xác nhận xóa
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa nghệ sĩ <strong id="artistName"></strong>?</p>
+                <p class="text-warning small mb-0">
+                    <i class="fas fa-info-circle"></i> Lưu ý: Các bài hát của nghệ sĩ này sẽ không bị xóa.
+                </p>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Xóa
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(artistId, artistName) {
+            document.getElementById('artistName').textContent = artistName;
+            document.getElementById('deleteForm').action = '/Admin/DeleteArtist/' + artistId;
+            
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+    </script>
+}
+
+<style>
+    .artist-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .artist-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(29, 185, 84, 0.3);
+    }
+
+    .artist-image {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary-color);
+    }
+
+    .bio-text {
+        min-height: 60px;
+        line-height: 1.5;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+</style>

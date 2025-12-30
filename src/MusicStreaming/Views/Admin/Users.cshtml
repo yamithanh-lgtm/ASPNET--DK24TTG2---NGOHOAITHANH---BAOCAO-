@@ -1,0 +1,263 @@
+@model List<MusicStreaming.Models.User>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    var currentUserId = Context.Session.GetInt32("UserId");
+}
+
+<div class="container mt-4">
+    <div class="section-header mb-4">
+        <div>
+            <h1 class="section-title"><i class="fas fa-users"></i> Quản lý người dùng</h1>
+            <p class="section-subtitle">Tổng số: @Model.Count người dùng</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <div class="card glass-effect">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 60px;"></th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Họ tên</th>
+                                <th>Vai trò</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                                <th>Đăng nhập cuối</th>
+                                <th style="width: 120px;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                var user = Model[i];
+                                var isCurrentUser = user.UserId == currentUserId;
+                                <tr class="@(isCurrentUser ? "table-active" : "")">
+                                    <td>@(i + 1)</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(user.AvatarUrl))
+                                        {
+                                            <img src="@user.AvatarUrl" alt="@user.Username" class="user-avatar">
+                                        }
+                                        else
+                                        {
+                                            <div class="user-avatar-placeholder">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <strong>@user.Username</strong>
+                                        @if (isCurrentUser)
+                                        {
+                                            <span class="badge bg-info ms-2">Bạn</span>
+                                        }
+                                    </td>
+                                    <td>@user.Email</td>
+                                    <td>@(user.FullName ?? "-")</td>
+                                    <td>
+                                        @if (user.Role == "Admin")
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-crown"></i> Admin
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-primary">
+                                                <i class="fas fa-user"></i> User
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.IsActive)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle"></i> Hoạt động
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-ban"></i> Đã khóa
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small>@user.CreatedDate.ToString("dd/MM/yyyy")</small>
+                                    </td>
+                                    <td>
+                                        @if (user.LastLoginDate.HasValue)
+                                        {
+                                            <small>@user.LastLoginDate.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted">Chưa đăng nhập</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!isCurrentUser)
+                                        {
+                                            <button type="button" 
+                                                    class="btn btn-sm @(user.IsActive ? "btn-outline-warning" : "btn-outline-success")"
+                                                    onclick="confirmToggleStatus(@user.UserId, '@user.Username', @user.IsActive.ToString().ToLower())"
+                                                    title="@(user.IsActive ? "Khóa tài khoản" : "Kích hoạt tài khoản")">
+                                                <i class="fas fa-@(user.IsActive ? "lock" : "unlock")"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="Không thể thao tác với tài khoản của bạn">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Statistics -->
+                <div class="row mt-4 pt-3 border-top border-secondary">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-primary">@Model.Count(u => u.Role == "Admin")</h4>
+                            <p class="text-muted mb-0">Quản trị viên</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-info">@Model.Count(u => u.Role == "User")</h4>
+                            <p class="text-muted mb-0">Người dùng</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-success">@Model.Count(u => u.IsActive)</h4>
+                            <p class="text-muted mb-0">Đang hoạt động</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-secondary">@Model.Count(u => !u.IsActive)</h4>
+                            <p class="text-muted mb-0">Đã khóa</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card glass-effect">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-users-slash fa-4x mb-3" style="color: rgba(255,255,255,0.3);"></i>
+                <h4>Chưa có người dùng nào</h4>
+                <p class="text-muted">Hệ thống chưa có người dùng nào đăng ký</p>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Toggle Status Confirmation Modal -->
+<div class="modal fade" id="toggleStatusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-warning"></i> Xác nhận
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="toggleMessage"></p>
+                <p class="text-muted small mb-0">
+                    <i class="fas fa-info-circle"></i> Người dùng có thể được kích hoạt lại sau này.
+                </p>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="toggleStatusForm" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-warning" id="toggleButton">
+                        <i class="fas fa-sync"></i> Xác nhận
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmToggleStatus(userId, username, isActive) {
+            const action = isActive ? 'khóa' : 'kích hoạt';
+            const message = `Bạn có chắc chắn muốn ${action} tài khoản <strong>${username}</strong>?`;
+            
+            document.getElementById('toggleMessage').innerHTML = message;
+            document.getElementById('toggleStatusForm').action = '/Admin/ToggleUserStatus/' + userId;
+            
+            const modal = new bootstrap.Modal(document.getElementById('toggleStatusModal'));
+            modal.show();
+        }
+    </script>
+}
+
+<style>
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-color);
+    }
+
+    .user-avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .table-dark {
+        --bs-table-bg: transparent;
+        --bs-table-hover-bg: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-active {
+        --bs-table-bg: rgba(29, 185, 84, 0.1);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 0.35em 0.65em;
+    }
+</style>

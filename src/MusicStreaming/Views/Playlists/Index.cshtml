@@ -1,0 +1,101 @@
+@model IEnumerable<MusicStreaming.Models.Playlist>
+
+@{
+    ViewData["Title"] = "Playlist của tôi";
+}
+
+<div class="container mt-5 pt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-white fw-bold">Thư viện của tôi</h2>
+            <p class="text-muted">Các danh sách phát bạn đã tạo</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4">
+            <i class="fas fa-plus me-2"></i> Tạo Playlist mới
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-3">
+                <i class="fas fa-music fa-4x text-muted"></i>
+            </div>
+            <h4 class="text-white">Bạn chưa có playlist nào</h4>
+            <p class="text-muted">Hãy tạo playlist đầu tiên để lưu những bài hát yêu thích!</p>
+            <a asp-action="Create" class="btn btn-outline-light mt-3">Tạo ngay</a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 bg-dark text-white border-0 shadow-sm hover-card">
+                        <div class="position-relative">
+                            <img src="@(string.IsNullOrEmpty(item.CoverImageUrl) ? "/images/playlists/default.jpg" : item.CoverImageUrl)" 
+                                 class="card-img-top" alt="@item.PlaylistName" 
+                                 style="height: 200px; object-fit: cover;">
+                            <div class="play-overlay">
+                                <a asp-action="Details" asp-route-id="@item.PlaylistId" class="btn btn-success rounded-circle btn-lg">
+                                    <i class="fas fa-play"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate">
+                                <a asp-action="Details" asp-route-id="@item.PlaylistId" class="text-white text-decoration-none">
+                                    @item.PlaylistName
+                                </a>
+                            </h5>
+                            <p class="card-text text-muted small mb-2">
+                                @(item.PlaylistSongs?.Count ?? 0) bài hát
+                            </p>
+                            <p class="card-text text-muted small text-truncate">
+                                @item.Description
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top border-secondary d-flex justify-content-between">
+                            <small class="text-muted">
+                                <i class="fas fa-@(item.IsPublic ? "globe" : "lock")"></i> @(item.IsPublic ? "Công khai" : "Riêng tư")
+                            </small>
+                            <form asp-action="Delete" asp-route-id="@item.PlaylistId" method="post" 
+                                  onsubmit="return confirm('Bạn có chắc muốn xóa playlist này?');">
+                                <button type="submit" class="btn btn-link text-danger p-0 btn-sm" title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.2s;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        background-color: #282828 !important;
+    }
+    .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .hover-card:hover .play-overlay {
+        opacity: 1;
+    }
+</style>

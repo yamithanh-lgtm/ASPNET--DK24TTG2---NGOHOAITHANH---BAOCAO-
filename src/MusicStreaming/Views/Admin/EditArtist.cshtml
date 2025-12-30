@@ -1,0 +1,77 @@
+@model MusicStreaming.Models.Artist
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Nghệ sĩ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-dark text-white border-secondary shadow">
+                <div class="card-header border-secondary">
+                    <h3 class="mb-0"><i class="fas fa-edit text-info"></i> Chỉnh sửa Nghệ sĩ</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditArtist" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="ArtistId" />
+                        <input type="hidden" asp-for="ImageUrl" />
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label asp-for="ArtistName" class="form-label">Tên Nghệ sĩ</label>
+                                    <input asp-for="ArtistName" class="form-control bg-secondary text-white border-0" placeholder="Nhập tên nghệ sĩ..." autofocus />
+                                    <span asp-validation-for="ArtistName" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Country" class="form-label">Quốc gia</label>
+                                    <input asp-for="Country" class="form-control bg-secondary text-white border-0" placeholder="Ví dụ: Việt Nam" />
+                                    <span asp-validation-for="Country" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Biography" class="form-label">Tiểu sử</label>
+                                    <textarea asp-for="Biography" class="form-control bg-secondary text-white border-0" rows="5" placeholder="Nhập tiểu sử..."></textarea>
+                                    <span asp-validation-for="Biography" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Ảnh đại diện</label>
+                                    <div class="text-center mb-2">
+                                        <img id="previewImage" src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/artists/default.jpg" : Model.ImageUrl)" class="img-fluid rounded-circle border border-secondary" style="width: 150px; height: 150px; object-fit: cover;" />
+                                    </div>
+                                    <input type="file" class="form-control bg-secondary text-white border-0" name="imageFile" accept="image/*" onchange="previewFile(this)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Lưu thay đổi</button>
+                            <a asp-action="Artists" class="btn btn-outline-light">Hủy bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function previewFile(input) {
+            var file = input.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#previewImage').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+}

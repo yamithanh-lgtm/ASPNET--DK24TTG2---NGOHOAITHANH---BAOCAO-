@@ -1,0 +1,79 @@
+@model MusicStreaming.Models.Album
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Album";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-dark text-white border-secondary shadow">
+                <div class="card-header border-secondary">
+                    <h3 class="mb-0"><i class="fas fa-edit text-info"></i> Chỉnh sửa Album</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditAlbum" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="AlbumId" />
+                        <input type="hidden" asp-for="CoverImageUrl" />
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label asp-for="AlbumName" class="form-label">Tên Album</label>
+                                    <input asp-for="AlbumName" class="form-control bg-secondary text-white border-0" placeholder="Nhập tên album..." autofocus />
+                                    <span asp-validation-for="AlbumName" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="ArtistId" class="form-label">Nghệ sĩ</label>
+                                    <select asp-for="ArtistId" class="form-select bg-secondary text-white border-0" asp-items="@(new SelectList(ViewBag.Artists, "ArtistId", "ArtistName"))">
+                                        <option value="">-- Chọn Nghệ sĩ --</option>
+                                    </select>
+                                    <span asp-validation-for="ArtistId" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="ReleaseDate" class="form-label">Ngày phát hành</label>
+                                    <input asp-for="ReleaseDate" class="form-control bg-secondary text-white border-0" type="date" />
+                                    <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Ảnh bìa</label>
+                                    <div class="text-center mb-2">
+                                        <img id="previewImage" src="@(string.IsNullOrEmpty(Model.CoverImageUrl) ? "/images/albums/default.jpg" : Model.CoverImageUrl)" class="img-fluid rounded border border-secondary" style="max-height: 200px;" />
+                                    </div>
+                                    <input type="file" class="form-control bg-secondary text-white border-0" name="imageFile" accept="image/*" onchange="previewFile(this)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Lưu thay đổi</button>
+                            <a asp-action="Albums" class="btn btn-outline-light">Hủy bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function previewFile(input) {
+            var file = input.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#previewImage').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+}

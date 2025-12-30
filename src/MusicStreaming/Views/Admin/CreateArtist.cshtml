@@ -1,0 +1,114 @@
+@model MusicStreaming.Models.Artist
+
+@{
+    ViewData["Title"] = "Thêm nghệ sĩ mới";
+}
+
+<div class="container mt-4">
+    <div class="section-header mb-4">
+        <div>
+            <h1 class="section-title"><i class="fas fa-user-plus"></i> Thêm nghệ sĩ mới</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Artists">Nghệ sĩ</a></li>
+                    <li class="breadcrumb-item active">Thêm mới</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card glass-effect">
+                <div class="card-body p-4">
+                    <form asp-action="CreateArtist" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <label for="ArtistName" class="form-label">
+                                <i class="fas fa-microphone"></i> Tên nghệ sĩ <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="ArtistName" name="ArtistName" required autofocus>
+                            <span asp-validation-for="ArtistName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="Biography" class="form-label">
+                                <i class="fas fa-info-circle"></i> Tiểu sử
+                            </label>
+                            <textarea class="form-control" id="Biography" name="Biography" rows="5" placeholder="Nhập tiểu sử nghệ sĩ..."></textarea>
+                            <span asp-validation-for="Biography" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="imageFile" class="form-label">
+                                <i class="fas fa-image"></i> Ảnh nghệ sĩ
+                            </label>
+                            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" onchange="previewImage(this)">
+                            <small class="text-muted">Định dạng: JPG, PNG, GIF. Kích thước tối đa: 5MB</small>
+                            
+                            <div id="imagePreview" class="mt-3" style="display: none;">
+                                <p class="text-muted mb-2">Xem trước:</p>
+                                <img id="preview" src="" alt="Preview" style="max-width: 300px; max-height: 300px; border-radius: 10px; border: 2px solid var(--primary-color);">
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a asp-action="Artists" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Thêm nghệ sĩ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewImage(input) {
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+    </script>
+}
+
+<style>
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    
+    .breadcrumb-item.active {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(29, 185, 84, 0.25);
+    }
+</style>

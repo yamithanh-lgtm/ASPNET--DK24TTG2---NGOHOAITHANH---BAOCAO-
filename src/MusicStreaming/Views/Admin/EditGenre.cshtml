@@ -1,0 +1,39 @@
+@model MusicStreaming.Models.Genre
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Thể loại";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white border-secondary shadow">
+                <div class="card-header border-secondary">
+                    <h3 class="mb-0"><i class="fas fa-edit text-info"></i> Chỉnh sửa Thể loại</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditGenre">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="GenreId" />
+                        
+                        <div class="mb-3">
+                            <label asp-for="GenreName" class="form-label">Tên Thể loại</label>
+                            <input asp-for="GenreName" class="form-control bg-secondary text-white border-0" placeholder="Nhập tên thể loại..." autofocus />
+                            <span asp-validation-for="GenreName" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Lưu thay đổi</button>
+                            <a asp-action="Genres" class="btn btn-outline-light">Hủy bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

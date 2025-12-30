@@ -1,0 +1,437 @@
+@model MusicStreaming.Models.User
+
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    var favorites = ViewBag.Favorites as List<MusicStreaming.Models.Favorite>;
+    var playlists = ViewBag.Playlists as List<MusicStreaming.Models.Playlist>;
+}
+
+<div class="container mt-5 pt-4">
+    <!-- Header Profile -->
+    <div class="card glass-effect border-0 mb-4">
+        <div class="card-body p-5">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <div class="position-relative d-inline-block">
+                        <img src="@(string.IsNullOrEmpty(Model.AvatarUrl) ? "/images/avatars/default.png" : Model.AvatarUrl)" 
+                             class="rounded-circle border border-4 border-dark shadow-lg" 
+                             style="width: 180px; height: 180px; object-fit: cover;" alt="Avatar">
+                        <button class="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle p-2" 
+                                data-bs-toggle="modal" data-bs-target="#updateAvatarModal" title="Đổi ảnh đại diện">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h1 class="display-4 fw-bold text-white mb-1">@Model.FullName</h1>
+                            <p class="text-muted fs-5 mb-3">@@@Model.Username</p>
+                            <div class="d-flex gap-3 text-white-50 mb-4">
+                                <span><i class="fas fa-envelope me-2"></i>@Model.Email</span>
+                                <span><i class="fas fa-calendar-alt me-2"></i>Tham gia: @Model.CreatedDate.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-light rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <i class="fas fa-edit me-2"></i> Chỉnh sửa
+                        </button>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="row g-3">
+                        <div class="col-auto">
+                            <div class="d-flex align-items-center px-4 py-2 rounded-pill bg-dark bg-opacity-50 border border-secondary">
+                                <i class="fas fa-heart text-danger me-2"></i>
+                                <span class="fw-bold text-white me-1">@ViewBag.FavoritesCount</span>
+                                <span class="text-muted small">Yêu thích</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex align-items-center px-4 py-2 rounded-pill bg-dark bg-opacity-50 border border-secondary">
+                                <i class="fas fa-list text-info me-2"></i>
+                                <span class="fw-bold text-white me-1">@ViewBag.PlaylistsCount</span>
+                                <span class="text-muted small">Playlists</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex align-items-center px-4 py-2 rounded-pill bg-dark bg-opacity-50 border border-secondary">
+                                <i class="fas fa-comment text-warning me-2"></i>
+                                <span class="fw-bold text-white me-1">@ViewBag.CommentsCount</span>
+                                <span class="text-muted small">Bình luận</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Tabs -->
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-pills mb-4" id="profileTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active rounded-pill px-4 me-2" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                        <i class="fas fa-th-large me-2"></i> Tổng quan
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill px-4 me-2" id="favorites-tab" data-bs-toggle="tab" data-bs-target="#favorites" type="button" role="tab">
+                        <i class="fas fa-heart me-2"></i> Yêu thích
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill px-4 me-2" id="playlists-tab" data-bs-toggle="tab" data-bs-target="#playlists" type="button" role="tab">
+                        <i class="fas fa-list me-2"></i> Playlists
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill px-4" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab">
+                        <i class="fas fa-cog me-2"></i> Cài đặt
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="profileTabsContent">
+                <!-- Overview Tab -->
+                <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-lg-8">
+                            <div class="card glass-effect h-100">
+                                <div class="card-header bg-transparent border-secondary d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0 text-white"><i class="fas fa-history me-2 text-primary"></i> Bài hát yêu thích gần đây</h5>
+                                    <a href="#" onclick="$('#favorites-tab').tab('show')" class="text-decoration-none small">Xem tất cả</a>
+                                </div>
+                                <div class="card-body p-0">
+                                    @if (favorites != null && favorites.Any())
+                                    {
+                                        <div class="list-group list-group-flush">
+                                            @foreach (var item in favorites.Take(5))
+                                            {
+                                                <a asp-controller="Songs" asp-action="Details" asp-route-id="@item.SongId" 
+                                                   class="list-group-item list-group-item-action bg-transparent text-white border-secondary d-flex align-items-center p-3">
+                                                    <img src="@(item.Song?.CoverImageUrl ?? "/images/default-cover.jpg")" 
+                                                         class="rounded me-3" width="50" height="50" style="object-fit: cover;">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">@item.Song?.SongName</h6>
+                                                        <small class="text-muted">@item.Song?.Artist?.ArtistName</small>
+                                                    </div>
+                                                    <div class="text-end text-muted small">
+                                                        <i class="far fa-clock me-1"></i> @item.CreatedDate.ToString("dd/MM")
+                                                    </div>
+                                                </a>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center py-5 text-muted">
+                                            <i class="far fa-heart fa-3x mb-3"></i>
+                                            <p>Chưa có bài hát yêu thích nào</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card glass-effect h-100">
+                                <div class="card-header bg-transparent border-secondary d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0 text-white"><i class="fas fa-list me-2 text-info"></i> Playlists của tôi</h5>
+                                    <a asp-controller="Playlists" asp-action="Create" class="btn btn-sm btn-outline-primary rounded-pill">
+                                        <i class="fas fa-plus"></i>
+                                    </a>
+                                </div>
+                                <div class="card-body p-0">
+                                    @if (playlists != null && playlists.Any())
+                                    {
+                                        <div class="list-group list-group-flush">
+                                            @foreach (var item in playlists.Take(5))
+                                            {
+                                                <a asp-controller="Playlists" asp-action="Details" asp-route-id="@item.PlaylistId" 
+                                                   class="list-group-item list-group-item-action bg-transparent text-white border-secondary d-flex align-items-center p-3">
+                                                    <div class="bg-secondary rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                                        <i class="fas fa-music text-white-50"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">@item.PlaylistName</h6>
+                                                        <small class="text-muted">@item.PlaylistSongs?.Count bài hát</small>
+                                                    </div>
+                                                    @if (!item.IsPublic)
+                                                    {
+                                                        <i class="fas fa-lock text-muted small"></i>
+                                                    }
+                                                </a>
+                                            }
+                                        </div>
+                                        <div class="p-3 text-center border-top border-secondary">
+                                            <a href="#" onclick="$('#playlists-tab').tab('show')" class="text-decoration-none small">Xem tất cả playlists</a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center py-5 text-muted">
+                                            <i class="fas fa-list fa-3x mb-3"></i>
+                                            <p>Chưa có playlist nào</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorites Tab -->
+                <div class="tab-pane fade" id="favorites" role="tabpanel">
+                    <div class="card glass-effect">
+                        <div class="card-body">
+                            <h4 class="mb-4 text-white">Bài hát đã thích</h4>
+                            @if (favorites != null && favorites.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-hover align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 50px;">#</th>
+                                                <th>Bài hát</th>
+                                                <th>Album</th>
+                                                <th>Ngày thích</th>
+                                                <th class="text-end">Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{ int i = 1; }
+                                            @foreach (var item in favorites)
+                                            {
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="@(item.Song?.CoverImageUrl ?? "/images/default-cover.jpg")" 
+                                                                 class="rounded me-3" width="40" height="40" style="object-fit: cover;">
+                                                            <div>
+                                                                <div class="fw-bold">@item.Song?.SongName</div>
+                                                                <div class="small text-muted">@item.Song?.Artist?.ArtistName</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>@(item.Song?.Album?.AlbumName ?? "-")</td>
+                                                    <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                                    <td class="text-end">
+                                                        <button class="btn btn-sm btn-primary rounded-circle me-2" onclick="playSong(@item.SongId)">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger rounded-circle" onclick="toggleFavorite(@item.SongId, this)">
+                                                            <i class="fas fa-heart"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-5">
+                                    <p class="text-muted">Bạn chưa thích bài hát nào.</p>
+                                    <a asp-controller="Songs" asp-action="Index" class="btn btn-primary rounded-pill">Khám phá ngay</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Playlists Tab -->
+                <div class="tab-pane fade" id="playlists" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="text-white mb-0">Playlists của tôi</h4>
+                        <a asp-controller="Playlists" asp-action="Create" class="btn btn-primary rounded-pill">
+                            <i class="fas fa-plus me-2"></i> Tạo Playlist
+                        </a>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+                        @if (playlists != null && playlists.Any())
+                        {
+                            foreach (var item in playlists)
+                            {
+                                <div class="col">
+                                    <div class="card h-100 bg-dark text-white border-secondary shadow-sm hover-card">
+                                        <div class="position-relative">
+                                            <img src="@(string.IsNullOrEmpty(item.CoverImageUrl) ? "/images/playlists/default.jpg" : item.CoverImageUrl)" 
+                                                 class="card-img-top" alt="@item.PlaylistName" 
+                                                 style="height: 200px; object-fit: cover;">
+                                            <div class="play-overlay">
+                                                <a asp-controller="Playlists" asp-action="Details" asp-route-id="@item.PlaylistId" class="btn btn-success rounded-circle btn-lg">
+                                                    <i class="fas fa-play"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-truncate">
+                                                <a asp-controller="Playlists" asp-action="Details" asp-route-id="@item.PlaylistId" class="text-white text-decoration-none">
+                                                    @item.PlaylistName
+                                                </a>
+                                            </h5>
+                                            <p class="card-text text-muted small mb-2">
+                                                @(item.PlaylistSongs?.Count ?? 0) bài hát
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-12 text-center py-5">
+                                <p class="text-muted">Bạn chưa có playlist nào.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="tab-pane fade" id="settings" role="tabpanel">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card glass-effect">
+                                <div class="card-body p-4">
+                                    <h4 class="mb-4 text-white"><i class="fas fa-lock me-2"></i> Đổi mật khẩu</h4>
+                                    <form asp-action="ChangePassword" method="post">
+                                        <div class="mb-3">
+                                            <label class="form-label">Mật khẩu hiện tại</label>
+                                            <input type="password" name="CurrentPassword" class="form-control bg-dark text-white border-secondary" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Mật khẩu mới</label>
+                                            <input type="password" name="NewPassword" class="form-control bg-dark text-white border-secondary" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Xác nhận mật khẩu mới</label>
+                                            <input type="password" name="ConfirmPassword" class="form-control bg-dark text-white border-secondary" required>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary px-4">Lưu thay đổi</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Chỉnh sửa thông tin</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="UpdateProfile" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label">Họ và tên</label>
+                        <input asp-for="FullName" class="form-control bg-secondary text-white border-0" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control bg-secondary text-white border-0" type="email" />
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-pills .nav-link {
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s;
+    }
+    
+    .nav-pills .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    .nav-pills .nav-link.active {
+        background: var(--primary-color);
+        color: #fff;
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4);
+    }
+
+    .hover-card {
+        transition: transform 0.2s;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        background-color: #282828 !important;
+    }
+    .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .hover-card:hover .play-overlay {
+        opacity: 1;
+    }
+</style>
+
+<!-- Update Avatar Modal -->
+<div class="modal fade" id="updateAvatarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Cập nhật ảnh đại diện</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="UpdateAvatar" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Chọn ảnh mới</label>
+                        <input type="file" name="avatarFile" class="form-control bg-secondary text-white border-0" accept="image/*" required onchange="previewAvatar(this)" />
+                    </div>
+                    <div class="text-center">
+                        <img id="avatarPreview" src="#" class="rounded-circle border border-secondary d-none" style="width: 150px; height: 150px; object-fit: cover;" />
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewAvatar(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#avatarPreview').attr('src', e.target.result).removeClass('d-none');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

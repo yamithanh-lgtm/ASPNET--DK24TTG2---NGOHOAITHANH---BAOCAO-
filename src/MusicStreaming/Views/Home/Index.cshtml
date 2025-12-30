@@ -1,0 +1,362 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+    var featuredPlaylists = ViewBag.FeaturedPlaylists as List<MusicStreaming.Models.Playlist>;
+    var newSongs = ViewBag.NewSongs as List<MusicStreaming.Models.Song>;
+    var trendingSongs = ViewBag.TrendingSongs as List<MusicStreaming.Models.Song>;
+    var genres = ViewBag.Genres as List<MusicStreaming.Models.Genre>;
+}
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 fade-in">
+                <h1 class="display-3 fw-bold mb-4">
+                    Âm nhạc cho <span class="text-gradient">mọi tâm trạng</span>
+                </h1>
+                <p class="lead mb-4">
+                    Khám phá hàng triệu bài hát từ các nghệ sĩ yêu thích của bạn. Nghe nhạc mọi lúc, mọi nơi.
+                </p>
+                <div class="d-flex gap-3">
+                    <a asp-controller="Songs" asp-action="Index" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play me-2"></i> Khám phá ngay
+                    </a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i> Đăng ký miễn phí
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center fade-in">
+                <div class="hero-image">
+                    <i class="fas fa-headphones" style="font-size: 15rem; color: var(--primary-color); opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Playlists -->
+@if (featuredPlaylists != null && featuredPlaylists.Any())
+{
+    <div class="container mt-5 home-featured-playlists">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Playlist nổi bật</h2>
+                <p class="section-subtitle">Những playlist được tuyển chọn đặc biệt cho bạn</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var playlist in featuredPlaylists)
+            {
+                <div class="col-md-4 col-lg-2 fade-in">
+                    <a asp-controller="Playlists"
+                       asp-action="Details"
+                       asp-route-id="@playlist.PlaylistId"
+                       class="playlist-link">
+
+                        <div class="card playlist-card">
+                            <img src="@(playlist.CoverImageUrl ?? "/images/default-playlist.jpg")"
+                                 class="card-img-top"
+                                 alt="@playlist.PlaylistName">
+
+                            <div class="card-body">
+                                <h5 class="card-title">@playlist.PlaylistName</h5>
+                                <p class="card-text mb-0">
+                                    <small>@(playlist.PlaylistSongs?.Count ?? 0) bài hát</small>
+                                </p>
+                            </div>
+                        </div>
+
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+
+<!-- New Songs -->
+@if (newSongs != null && newSongs.Any())
+{
+    <div class="container mt-5 home-new-songs">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Mới phát hành</h2>
+                <p class="section-subtitle">Những bài hát mới nhất từ các nghệ sĩ</p>
+            </div>
+            <a asp-controller="Songs" asp-action="Index" class="btn btn-outline-primary">
+                Xem tất cả <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            @foreach (var song in newSongs.Take(6))
+            {
+                <div class="col-md-6 col-lg-4 fade-in">
+                    <div class="song-card" onclick="playSong(@song.SongId, '@song.SongName', '@song.Artist?.ArtistName', '@song.AudioFileUrl', '@(song.CoverImageUrl ?? "/images/default-cover.jpg")')">
+                        <img src="@(song.CoverImageUrl ?? "/images/default-cover.jpg")" alt="@song.SongName">
+                        <div class="song-info">
+                            <div class="song-name">@song.SongName</div>
+                            <div class="song-artist">@song.Artist?.ArtistName</div>
+                        </div>
+                        <div class="song-actions">
+                            <button class="btn-icon" onclick="event.stopPropagation(); playSong(@song.SongId, '@song.SongName', '@song.Artist?.ArtistName', '@song.AudioFileUrl', '@(song.CoverImageUrl ?? "/images/default-cover.jpg")')">
+                                <i class="fas fa-play-circle"></i>
+                            </button>
+                            <a href="@Url.Action("Details", "Songs", new { id = song.SongId })" class="btn-icon" onclick="event.stopPropagation()">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Trending Songs -->
+@if (trendingSongs != null && trendingSongs.Any())
+{
+    <div class="container mt-5">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title display-5 fw-bold"><i class="fas fa-fire text-danger animate-fire"></i> Trending Now</h2>
+            <p class="section-subtitle text-muted">Top 10 bài hát hot nhất tuần qua</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="trending-list">
+                    @for (int i = 0; i < Math.Min(10, trendingSongs.Count); i++)
+                    {
+                        var song = trendingSongs[i];
+                        var rankClass = i switch { 0 => "rank-1", 1 => "rank-2", 2 => "rank-3", _ => "rank-normal" };
+                        
+                        <div class="trending-item fade-in" style="animation-delay: @(i * 0.1)s" 
+                             onclick="playSong(@song.SongId, '@song.SongName', '@song.Artist?.ArtistName', '@song.AudioFileUrl', '@(song.CoverImageUrl ?? "/images/default-cover.jpg")')">
+                            
+                            <!-- Rank Number -->
+                            <div class="trending-rank @rankClass">
+                                @if(i < 3) {
+                                    <i class="fas fa-crown mb-1 d-block" style="font-size: 0.8rem; opacity: 0.8;"></i>
+                                }
+                                <span>#@(i + 1)</span>
+                            </div>
+
+                            <!-- Cover Image -->
+                            <div class="trending-img-container position-relative">
+                                <img src="@(song.CoverImageUrl ?? "/images/default-cover.jpg")" class="trending-cover" alt="@song.SongName">
+                                <div class="play-overlay">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+
+                            <!-- Song Info -->
+                            <div class="trending-info ms-3">
+                                <h5 class="song-title mb-1 fw-bold text-dark">@song.SongName</h5>
+                                <div class="song-artist text-muted small">
+                                    @song.Artist?.ArtistName
+                                </div>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="trending-stats d-none d-md-block">
+                                <span class="badge bg-light text-dark border">
+                                    <i class="fas fa-headphones-alt me-1 text-primary"></i> 
+                                    @song.PlayCount.ToString("N0")
+                                </span>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="trending-actions ms-3" onclick="event.stopPropagation()">
+                                <button class="btn btn-icon-circle btn-light border" title="Phát"
+                                    onclick="playSong(@song.SongId, '@song.SongName', '@song.Artist?.ArtistName', '@song.AudioFileUrl', '@(song.CoverImageUrl ?? "/images/default-cover.jpg")')">
+                                    <i class="fas fa-play text-primary"></i>
+                                </button>
+                                <a href="@Url.Action("Details", "Songs", new { id = song.SongId })" class="btn btn-icon-circle btn-light border ms-2" title="Chi tiết">
+                                    <i class="fas fa-info text-secondary"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    /* CSS for Trending Section */
+    .trending-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .trending-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .trending-item:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        border-color: rgba(29, 185, 84, 0.3);
+        background: #fafafa;
+    }
+
+    /* Rank Styles */
+    .trending-rank {
+        width: 60px;
+        text-align: center;
+        font-weight: 900;
+        font-size: 1.8rem;
+        margin-right: 1rem;
+        line-height: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .rank-1 { color: #FFD700; text-shadow: 0 4px 8px rgba(255, 215, 0, 0.4); font-size: 2.2rem; }
+    .rank-2 { color: #C0C0C0; text-shadow: 0 4px 8px rgba(192, 192, 192, 0.4); font-size: 2rem; }
+    .rank-3 { color: #CD7F32; text-shadow: 0 4px 8px rgba(205, 127, 50, 0.4); font-size: 2rem; }
+    .rank-normal { color: #e9ecef; -webkit-text-stroke: 1px #adb5bd; }
+
+    /* Cover Image & Overlay */
+    .trending-img-container {
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
+        overflow: hidden;
+        flex-shrink: 0;
+        position: relative;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .trending-cover {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .play-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .play-overlay i {
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .trending-item:hover .play-overlay {
+        opacity: 1;
+    }
+    .trending-item:hover .trending-cover {
+        transform: scale(1.1);
+    }
+
+    /* Info */
+    .trending-info {
+        flex: 1;
+        min-width: 0; /* Text truncation fix */
+    }
+
+    .song-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Actions */
+    .btn-icon-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-icon-circle:hover {
+        background: var(--primary-color);
+        color: white !important;
+        border-color: var(--primary-color) !important;
+    }
+
+    .btn-icon-circle:hover i {
+        color: white !important;
+    }
+
+    .animate-fire {
+        margin-right: 10px;
+        animation: firePulse 2s infinite;
+    }
+
+    @@keyframes firePulse {
+        0% { transform: scale(1); opacity: 1; text-shadow: 0 0 0 rgba(220, 53, 69, 0); }
+        50% { transform: scale(1.2); opacity: 0.8; text-shadow: 0 0 10px rgba(220, 53, 69, 0.5); }
+        100% { transform: scale(1); opacity: 1; text-shadow: 0 0 0 rgba(220, 53, 69, 0); }
+    }
+</style>
+
+<!-- Genres -->
+@if (genres != null && genres.Any())
+{
+    <div class="container mt-5 mb-5">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Thể loại</h2>
+                <p class="section-subtitle">Khám phá theo thể loại yêu thích</p>
+            </div>
+        </div>
+        <div class="row g-3">
+            @foreach (var genre in genres)
+            {
+                <div class="col-6 col-md-4 col-lg-3 fade-in">
+                    <a href="@Url.Action("Index", "Songs", new { genreId = genre.GenreId })" class="genre-card glass-effect" style="display: block; padding: 2rem; text-align: center; border-radius: 15px; text-decoration: none; transition: all 0.3s ease;">
+                        <i class="fas fa-music" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                        <h5 style="color: var(--text-primary); margin: 0;">@genre.GenreName</h5>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<style>
+    .hero-section {
+        padding: 4rem 0;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+    }
+
+    .ranking-number {
+        text-align: center;
+    }
+
+    .genre-card:hover {
+        transform: translateY(-5px);
+        background: rgba(29, 185, 84, 0.1);
+        border-color: var(--primary-color);
+    }
+</style>

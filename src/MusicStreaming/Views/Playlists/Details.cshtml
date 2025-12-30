@@ -1,0 +1,208 @@
+@model MusicStreaming.Models.Playlist
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = Model.PlaylistName;
+    bool isOwner = ViewBag.IsOwner ?? false;
+
+    var orderedItems = Model.PlaylistSongs?
+        .OrderBy(ps => ps.OrderIndex)
+        .ThenBy(ps => ps.AddedDate)
+        .ToList() ?? new List<MusicStreaming.Models.PlaylistSong>();
+
+    var playlistClient = orderedItems.Select(ps => new
+    {
+        songId = ps.SongId,
+        name = ps.Song?.SongName ?? "",
+        artist = ps.Song?.Artist?.ArtistName ?? "",
+        audio = ps.Song?.AudioFileUrl ?? "",
+        cover = string.IsNullOrEmpty(ps.Song?.CoverImageUrl) ? "/images/default-cover.jpg" : ps.Song.CoverImageUrl
+    }).ToList();
+
+    var playlistJson = JsonSerializer.Serialize(playlistClient);
+}
+
+<div class="container mt-5 pt-4">
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-md-3 text-center">
+            <img src="@(string.IsNullOrEmpty(Model.CoverImageUrl) ? "/images/playlists/default.jpg" : Model.CoverImageUrl)"
+                 alt="@Model.PlaylistName"
+                 class="img-fluid rounded shadow-lg mb-3"
+                 style="width: 250px; height: 250px; object-fit: cover;">
+        </div>
+
+        <div class="col-md-9 d-flex flex-column justify-content-end">
+            <h5 class="text-uppercase text-muted small fw-bold">Playlist</h5>
+            <h1 class="display-3 fw-bold text-white mb-3">@Model.PlaylistName</h1>
+            <p class="text-muted">@Model.Description</p>
+
+            <div class="d-flex align-items-center text-white-50">
+                @if (Model.User != null)
+                {
+                    <img src="@(string.IsNullOrEmpty(Model.User.AvatarUrl) ? "/images/avatars/default.png" : Model.User.AvatarUrl)"
+                         class="rounded-circle me-2"
+                         width="30" height="30"
+                         alt="User">
+                    <span class="fw-bold text-white me-2">@Model.User.FullName</span>
+                }
+                <span>• @(Model.PlaylistSongs?.Count ?? 0) bài hát</span>
+                <span class="mx-2">•</span>
+                <span>@Model.CreatedDate.ToString("yyyy")</span>
+
+                @if (!Model.IsPublic)
+                {
+                    <span class="badge bg-secondary ms-3"><i class="fas fa-lock"></i> Riêng tư</span>
+                }
+            </div>
+
+            <div class="mt-4">
+                @*
+                @if (orderedItems.Any())
+                {
+                    <button class="btn btn-success btn-lg rounded-circle me-3"
+                            type="button"
+                            onclick="playPlaylist()">
+                        <i class="fas fa-play"></i>
+                    </button>
+                }
+                *@
+                @if (isOwner)
+                {
+                    <form asp-action="Delete"
+                          asp-route-id="@Model.PlaylistId"
+                          method="post"
+                          class="d-inline"
+                          onsubmit="return confirm('Bạn có chắc muốn xóa playlist này?');">
+                        <button type="submit" class="btn btn-outline-danger rounded-pill">
+                            <i class="fas fa-trash"></i> Xóa Playlist
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Song List -->
+    <div class="playlist-songs">
+        @if (orderedItems.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle">
+                    <thead>
+                        <tr class="text-muted small text-uppercase border-bottom border-secondary">
+                            <th style="width: 50px;">#</th>
+                            <th>Tiêu đề</th>
+                            <th>Album</th>
+                            <th>Ngày thêm</th>
+                            <th class="text-end"><i class="far fa-clock"></i></th>
+                            @if (isOwner)
+                            {
+                                <th style="width: 50px;"></th>
+                            }
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                            int index = 1;
+                        }
+                        @foreach (var item in orderedItems)
+                        {
+                            var jsName = JsonSerializer.Serialize(item.Song?.SongName ?? "");
+                            var jsArtist = JsonSerializer.Serialize(item.Song?.Artist?.ArtistName ?? "");
+                            var jsAudio = JsonSerializer.Serialize(item.Song?.AudioFileUrl ?? "");
+                            var jsCover = JsonSerializer.Serialize(string.IsNullOrEmpty(item.Song?.CoverImageUrl)
+                            ? "/images/default-cover.jpg"
+                            : item.Song.CoverImageUrl);
+
+                            <tr class="song-row"
+                                onclick='playSong(@item.SongId, @jsName, @jsArtist, @jsAudio, @jsCover)'>
+                                <td class="text-muted">@index</td>
+
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="@(string.IsNullOrEmpty(item.Song?.CoverImageUrl) ? "/images/songs/default.jpg" : item.Song.CoverImageUrl)"
+                                             width="40" height="40"
+                                             class="rounded me-3"
+                                             alt="Cover">
+                                        <div>
+                                            <div class="text-white fw-bold">@item.Song?.SongName</div>
+                                            <div class="text-muted small">@item.Song?.Artist?.ArtistName</div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="text-muted">@(item.Song?.Album?.AlbumName ?? "-")</td>
+                                <td class="text-muted small">@item.AddedDate.ToString("dd/MM/yyyy")</td>
+
+                                <td class="text-end text-muted">
+                                    @{
+                                        var duration = item.Song?.Duration ?? 0;
+                                        var timeSpan = TimeSpan.FromSeconds(duration);
+                                        @timeSpan.ToString(@"mm\:ss")
+                                    }
+                                </td>
+
+                                @if (isOwner)
+                                {
+                                    <td class="text-end" onclick="event.stopPropagation();">
+                                        <button type="button"
+                                                class="btn btn-link text-muted hover-danger p-0"
+                                                onclick="removeFromPlaylist(@Model.PlaylistId, @item.SongId); event.stopPropagation();">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <p>Chưa có bài hát nào trong playlist này.</p>
+                <a asp-controller="Songs" asp-action="Index" class="btn btn-outline-primary rounded-pill">
+                    Khám phá bài hát
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const playlistSongs = @Html.Raw(playlistJson);
+
+        function playPlaylist() {
+            if (!playlistSongs || playlistSongs.length === 0) return;
+
+            const s = playlistSongs[0];
+            playSong(s.songId, s.name, s.artist, s.audio, s.cover);
+        }
+
+        function removeFromPlaylist(playlistId, songId) {
+            if (!confirm('Xóa bài hát này khỏi playlist?')) return;
+
+            $.post('/Playlists/RemoveSong', { playlistId: playlistId, songId: songId }, function (res) {
+                if (res.success) location.reload();
+                else alert(res.message);
+            });
+        }
+    </script>
+}
+
+<style>
+    .song-row {
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .hover-danger:hover {
+        color: #dc3545 !important;
+    }
+</style>

@@ -1,0 +1,50 @@
+@model MusicStreaming.Models.Playlist
+
+@{
+    ViewData["Title"] = "Tạo Playlist mới";
+}
+
+<div class="container mt-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white border-secondary shadow">
+                <div class="card-header border-secondary">
+                    <h3 class="mb-0"><i class="fas fa-plus-circle text-primary"></i> Tạo Playlist mới</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="PlaylistName" class="form-label">Tên Playlist</label>
+                            <input asp-for="PlaylistName" class="form-control bg-secondary text-white border-0" placeholder="Nhập tên playlist..." autofocus />
+                            <span asp-validation-for="PlaylistName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Mô tả</label>
+                            <textarea asp-for="Description" class="form-control bg-secondary text-white border-0" rows="3" placeholder="Mô tả về playlist này..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="IsPublic" id="IsPublic">
+                            <label class="form-check-label" for="IsPublic">
+                                Công khai (Mọi người có thể nhìn thấy)
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Tạo Playlist</button>
+                            <a asp-action="Index" class="btn btn-outline-light">Hủy bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,262 @@
+@model List<MusicStreaming.Models.Song>
+
+@{
+    ViewData["Title"] = "Quản lý bài hát";
+    var search = ViewBag.Search as string;
+}
+
+<div class="container mt-4">
+    <div class="section-header mb-4">
+        <div>
+            <h1 class="section-title"><i class="fas fa-music"></i> Quản lý bài hát</h1>
+            <p class="section-subtitle">Tổng số: @Model.Count bài hát</p>
+        </div>
+        <div>
+            <a asp-action="CreateSong" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Thêm bài hát mới
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Search Bar -->
+    <div class="card glass-effect mb-4">
+        <div class="card-body">
+            <form asp-action="Songs" method="get" class="row g-3">
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control border-secondary" 
+                               name="search" 
+                               value="@search" 
+                               placeholder="Tìm kiếm theo tên bài hát...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </form>
+            @if (!string.IsNullOrEmpty(search))
+            {
+                <div class="mt-2">
+                    <span class="badge bg-secondary">
+                        Kết quả tìm kiếm: "@search"
+                        <a asp-action="Songs" class="text-white ms-2" style="text-decoration: none;">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </span>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="card glass-effect">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 60px;"></th>
+                                <th>Tên bài hát</th>
+                                <th>Nghệ sĩ</th>
+                                <th>Thể loại</th>
+                                <th>Album</th>
+                                <th>Lượt nghe</th>
+                                <th>Ngày tạo</th>
+                                <th style="width: 150px;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                var song = Model[i];
+                                <tr>
+                                    <td>@(i + 1)</td>
+                                    <td>
+                                        <img src="@(song.CoverImageUrl ?? "/images/default-cover.jpg")" 
+                                             alt="@song.SongName" 
+                                             class="song-thumbnail"
+                                             onerror="this.src='/images/default-cover.jpg'">
+                                    </td>
+                                    <td>
+                                        <strong>@song.SongName</strong>
+                                        @if (song.Duration.HasValue)
+                                        {
+                                            <br><small class="text-muted">@song.Duration</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (song.Artist != null)
+                                        {
+                                            <span class="badge bg-primary">@song.Artist.ArtistName</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (song.Genre != null)
+                                        {
+                                            <span class="badge bg-info">@song.Genre.GenreName</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (song.Album != null)
+                                        {
+                                            @song.Album.AlbumName
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-play-circle text-primary"></i>
+                                        @song.PlayCount.ToString("N0")
+                                    </td>
+                                    <td>@song.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="EditSong" 
+                                               asp-route-id="@song.SongId" 
+                                               class="btn btn-sm btn-outline-warning"
+                                               title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="confirmDelete(@song.SongId, '@song.SongName')"
+                                                    title="Xóa">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card glass-effect">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-music fa-4x mb-3" style="color: rgba(255,255,255,0.3);"></i>
+                @if (!string.IsNullOrEmpty(search))
+                {
+                    <h4>Không tìm thấy bài hát nào</h4>
+                    <p class="text-muted">Không có bài hát nào khớp với từ khóa "@search"</p>
+                    <a asp-action="Songs" class="btn btn-secondary mt-3">
+                        <i class="fas fa-arrow-left"></i> Xem tất cả
+                    </a>
+                }
+                else
+                {
+                    <h4>Chưa có bài hát nào</h4>
+                    <p class="text-muted">Hãy thêm bài hát đầu tiên để bắt đầu</p>
+                    <a asp-action="CreateSong" class="btn btn-primary mt-3">
+                        <i class="fas fa-plus"></i> Thêm bài hát mới
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-warning"></i> Xác nhận xóa
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa bài hát <strong id="songName"></strong>?</p>
+                <p class="text-danger small mb-0">
+                    <i class="fas fa-exclamation-circle"></i> Hành động này không thể hoàn tác!
+                </p>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Xóa
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(songId, songName) {
+            document.getElementById('songName').textContent = songName;
+            document.getElementById('deleteForm').action = '/Admin/DeleteSong/' + songId;
+            
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+    </script>
+}
+
+<style>
+    .song-thumbnail {
+        width: 50px;
+        height: 50px;
+        border-radius: 5px;
+        object-fit: cover;
+    }
+
+    .table-dark {
+        --bs-table-bg: transparent;
+        --bs-table-hover-bg: rgba(255, 255, 255, 0.05);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .btn-group .btn {
+        border-radius: 0;
+    }
+
+    .btn-group .btn:first-child {
+        border-top-left-radius: 0.25rem;
+        border-bottom-left-radius: 0.25rem;
+    }
+
+    .btn-group .btn:last-child {
+        border-top-right-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
+    }
+</style>

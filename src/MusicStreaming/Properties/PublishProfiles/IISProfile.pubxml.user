@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAACq9YkGVxGE+oy9vIxYcNlQAAAAACAAAAAAAQZgAAAAEAACAAAABM3Gd0tKZni2cfPV/gapRS+p0gRE176A+brM9vy7BytQAAAAAOgAAAAAIAACAAAAAmFVextDOu8eV1oVuCKFlPPeN1d2+WLRWEL3NMbWVUaSAAAABPFRRP2kQ5Sr15yVhHwUFdFXkWqFefPvPcrr8x1sH3YUAAAAA8wU1mRMWNOAOma9MGOBILJB/kX9H/hhepFqLlyENuViFnYqJwqPh3ZaPbskFxqzCyAnoJbsKx59G77j9l/U5b</EncryptedPassword>
+    <History>True|2025-12-29T12:39:24.2420996Z||;True|2025-12-29T04:36:20.6732607-08:00||;True|2025-12-29T04:35:15.0339090-08:00||;True|2025-12-29T04:32:14.0269488-08:00||;True|2025-12-29T04:30:20.6255079-08:00||;True|2025-12-29T04:21:01.0817095-08:00||;True|2025-12-29T04:08:59.1744654-08:00||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Server=HOST1766891557%3bDatabase=MusicStreamingDB%3bUser Id=sa%3bPassword=Gamek123#%3bTrustServerCertificate=True%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

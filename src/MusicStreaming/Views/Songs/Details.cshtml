@@ -1,0 +1,338 @@
+@model MusicStreaming.Models.Song
+@{
+    ViewData["Title"] = Model.SongName;
+    var averageRating = ViewBag.AverageRating ?? 0.0;
+    var totalRatings = ViewBag.TotalRatings ?? 0;
+    var isFavorite = ViewBag.IsFavorite ?? false;
+    var userRating = ViewBag.UserRating ?? 0;
+    var relatedSongs = ViewBag.RelatedSongs as List<MusicStreaming.Models.Song>;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Song Info -->
+        <div class="col-lg-8">
+            <div class="card glass-effect mb-4">
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="@(Model.CoverImageUrl ?? "/images/default-cover.jpg")" class="img-fluid rounded" alt="@Model.SongName" style="width: 100%;">
+                        </div>
+                        <div class="col-md-8">
+                            <h1 class="mb-3">@Model.SongName</h1>
+                            <p class="lead">
+                                <i class="fas fa-user"></i> <strong>Nghệ sĩ:</strong> @Model.Artist?.ArtistName<br>
+                                @if (Model.Album != null)
+                                {
+                                    <i class="fas fa-compact-disc"></i> <strong>Album:</strong> @Model.Album.AlbumName<br>
+                                }
+                                <i class="fas fa-music"></i> <strong>Thể loại:</strong> @Model.Genre?.GenreName<br>
+                                @if (Model.Duration.HasValue)
+                                {
+                                    <i class="fas fa-clock"></i> <strong>Thời lượng:</strong> @TimeSpan.FromSeconds(Model.Duration.Value).ToString(@"mm\:ss")<br>
+                                }
+                                <i class="fas fa-play"></i> <strong>Lượt nghe:</strong> @Model.PlayCount.ToString("N0")<br>
+                                @if (Model.ReleaseDate.HasValue)
+                                {
+                                    <i class="fas fa-calendar"></i> <strong>Phát hành:</strong> @Model.ReleaseDate.Value.ToString("dd/MM/yyyy")
+                                }
+                            </p>
+
+                            <!-- Rating -->
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rating-stars">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="@(i <= averageRating ? "fas" : "far") fa-star" style="color: #ffc107; font-size: 1.5rem;"></i>
+                                        }
+                                    </div>
+                                    <span class="text-muted">
+                                        <span id="averageRating">@averageRating.ToString("0.0")</span>/5.0 
+                                        (<span id="totalRatings">@totalRatings</span> đánh giá)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="d-flex gap-2 mb-3">
+                                <button class="btn btn-primary" onclick="playSong(@Model.SongId, '@Model.SongName', '@Model.Artist?.ArtistName', '@Model.AudioFileUrl', '@(Model.CoverImageUrl ?? "/images/default-cover.jpg")')">
+                                    <i class="fas fa-play"></i> Phát nhạc
+                                </button>
+                                <button class="btn btn-outline-primary" onclick="toggleFavorite(@Model.SongId, this)">
+                                    <i class="@(isFavorite ? "fas" : "far") fa-heart" style="@(isFavorite ? "color: var(--primary-color);" : "")"></i>
+                                    Yêu thích
+                                </button>
+                                <button class="btn btn-outline-light" onclick="openAddToPlaylistModal(@Model.SongId)">
+                                    <i class="fas fa-plus"></i> Thêm vào Playlist
+                                </button>
+                            </div>
+
+                            <!-- User Rating -->
+                            @if (Context.Session.GetInt32("UserId").HasValue)
+                            {
+                                <div class="mb-3">
+                                    <p class="mb-2"><strong>Đánh giá của bạn:</strong></p>
+                                    <div class="rating-input">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="@(i <= userRating ? "fas" : "far") fa-star" 
+                                               id="star@i" 
+                                               style="font-size: 2rem; cursor: pointer; color: @(i <= userRating ? "#ffc107" : "var(--text-secondary)");"
+                                               onclick="addRating(@Model.SongId, @i)"></i>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lyrics -->
+            @if (!string.IsNullOrEmpty(Model.Lyrics))
+            {
+                <div class="card glass-effect mb-4">
+                    <div class="card-body">
+                        <h3 class="mb-3"><i class="fas fa-file-alt"></i> Lời bài hát</h3>
+                        <div class="lyrics" style="white-space: pre-line; line-height: 1.8;">
+                            @Model.Lyrics
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Comments -->
+            <div class="card glass-effect">
+                <div class="card-body">
+                    <h3 class="mb-4"><i class="fas fa-comments"></i> Bình luận</h3>
+
+                    @if (Context.Session.GetInt32("UserId").HasValue)
+                    {
+                        <div class="mb-4">
+                            <textarea class="form-control mb-2" id="commentContent" rows="3" placeholder="Viết bình luận của bạn..."></textarea>
+                            <button class="btn btn-primary" onclick="addComment(@Model.SongId)">
+                                <i class="fas fa-paper-plane"></i> Gửi bình luận
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> 
+                            Vui lòng <a asp-controller="Account" asp-action="Login" class="alert-link">đăng nhập</a> để bình luận
+                        </div>
+                    }
+
+                    <div id="commentsList">
+                        @if (Model.Comments != null && Model.Comments.Any())
+                        {
+                            foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedDate))
+                            {
+                                <div class="comment-item mb-3 p-3" style="background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                                    <div class="d-flex align-items-start">
+                                        <div class="comment-avatar me-3">
+                                            <i class="fas fa-user-circle fa-2x" style="color: var(--primary-color);"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="comment-header mb-2">
+                                                <strong>@comment.User?.Username</strong>
+                                                <span class="text-muted ms-2">@comment.CreatedDate.ToString("dd/MM/yyyy HH:mm")</span>
+                                            </div>
+                                            <div class="comment-content">@comment.Content</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted text-center py-4">
+                                <i class="fas fa-comment-slash fa-3x mb-3" style="opacity: 0.3;"></i><br>
+                                Chưa có bình luận nào. Hãy là người đầu tiên!
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Related Songs -->
+            @if (relatedSongs != null && relatedSongs.Any())
+            {
+                <div class="card glass-effect">
+                    <div class="card-body">
+                        <h4 class="mb-3"><i class="fas fa-list"></i> Bài hát liên quan</h4>
+                        @foreach (var song in relatedSongs)
+                        {
+                            <div class="song-card mb-2" onclick="window.location.href='@Url.Action("Details", new { id = song.SongId })'">
+                                <img src="@(song.CoverImageUrl ?? "/images/default-cover.jpg")" alt="@song.SongName" style="width: 50px; height: 50px;">
+                                <div class="song-info">
+                                    <div class="song-name" style="font-size: 0.9rem;">@song.SongName</div>
+                                    <div class="song-artist" style="font-size: 0.8rem;">@song.Artist?.ArtistName</div>
+                                </div>
+                                <button class="btn-icon" onclick="event.stopPropagation(); playSong(@song.SongId, '@song.SongName', '@song.Artist?.ArtistName', '@song.AudioFileUrl', '@(song.CoverImageUrl ?? "/images/default-cover.jpg")')">
+                                    <i class="fas fa-play-circle"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Add to Playlist Modal -->
+<div class="modal fade" id="addToPlaylistModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Thêm vào Playlist</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="playlistList" class="list-group list-group-flush">
+                    <!-- Playlist items will be loaded here -->
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary">
+                <a asp-controller="Playlists" asp-action="Create" class="btn btn-outline-primary btn-sm w-100">
+                    <i class="fas fa-plus"></i> Tạo Playlist mới
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentSongIdToAdd = 0;
+
+    function openAddToPlaylistModal(songId) {
+        currentSongIdToAdd = songId;
+        var modal = new bootstrap.Modal(document.getElementById('addToPlaylistModal'));
+        modal.show();
+        loadMyPlaylists();
+    }
+
+    function loadMyPlaylists() {
+        $.get('/Playlists/GetMyPlaylists', function(data) {
+            var html = '';
+            if (data.length === 0) {
+                html = '<div class="text-center text-muted py-3">Bạn chưa có playlist nào</div>';
+            } else {
+                data.forEach(function(p) {
+                    html += `<button type="button" class="list-group-item list-group-item-action bg-transparent text-dark border-secondary d-flex justify-content-between align-items-center" onclick="addToPlaylist(${p.playlistId})">
+                                <span>${p.playlistName}</span>
+                                <span class="badge bg-secondary rounded-pill">${p.count} bài</span>
+                             </button>`;
+                });
+            }
+            $('#playlistList').html(html);
+        });
+    }
+
+    function addToPlaylist(playlistId) {
+        $.post('/Playlists/AddSong', { playlistId: playlistId, songId: currentSongIdToAdd }, function(res) {
+            if (res.success) {
+                alert('Đã thêm vào playlist thành công!');
+                bootstrap.Modal.getInstance(document.getElementById('addToPlaylistModal')).hide();
+            } else {
+                alert(res.message);
+            }
+        });
+    }
+
+    function addRating(songId, score) {
+        $.post('/Songs/Rate', { songId: songId, score: score }, function(res) {
+            if (res.success) {
+                // Update stars UI
+                for (let i = 1; i <= 5; i++) {
+                    let star = $('#star' + i);
+                    if (i <= score) {
+                        star.removeClass('far').addClass('fas').css('color', '#ffc107');
+                    } else {
+                        star.removeClass('fas').addClass('far').css('color', 'var(--text-secondary)');
+                    }
+                }
+                // Update average
+                $('#averageRating').text(res.average.toFixed(1));
+                $('#totalRatings').text(res.total);
+                alert('Đánh giá thành công!');
+            } else {
+                alert(res.message);
+            }
+        });
+    }
+
+    function addComment(songId) {
+        var content = $('#commentContent').val();
+        if (!content) {
+            alert('Vui lòng nhập nội dung bình luận');
+            return;
+        }
+
+        $.post('/Songs/Comment', { songId: songId, content: content }, function(res) {
+            if (res.success) {
+                var html = `
+                    <div class="comment-item mb-3 p-3" style="background: rgba(0,0,0,0.03); border-radius: 10px;">
+                        <div class="d-flex align-items-start">
+                            <div class="comment-avatar me-3">
+                                <img src="${res.avatarUrl || '/images/avatars/default.png'}" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="comment-header mb-2">
+                                    <strong>${res.username}</strong>
+                                    <span class="text-muted ms-2">${res.createdDate}</span>
+                                </div>
+                                <div class="comment-content text-dark">${res.content}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                
+                // Nếu đang hiển thị "Chưa có bình luận", xóa nó đi
+                if ($('#commentsList p.text-center').length) {
+                    $('#commentsList').empty();
+                }
+                
+                $('#commentsList').prepend(html);
+                $('#commentContent').val('');
+            } else {
+                alert(res.message);
+            }
+        });
+    }
+
+    function toggleFavorite(songId, btn) {
+        $.post('/Songs/ToggleFavorite', { songId: songId }, function(res) {
+            if (res.success) {
+                var icon = $(btn).find('i');
+                if (res.isFavorite) {
+                    icon.removeClass('far').addClass('fas').css('color', 'var(--primary-color)');
+                } else {
+                    icon.removeClass('fas').addClass('far').css('color', '');
+                }
+            } else {
+                alert(res.message);
+            }
+        });
+    }
+</script>
+
+<style>
+    .lyrics {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .rating-input i:hover {
+        color: #ffc107 !important;
+    }
+</style>

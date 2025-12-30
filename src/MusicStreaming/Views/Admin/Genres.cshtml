@@ -1,0 +1,59 @@
+@model IEnumerable<MusicStreaming.Models.Genre>
+
+@{
+    ViewData["Title"] = "Quản lý Thể loại";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white fw-bold">Quản lý Thể loại</h2>
+        <a asp-action="CreateGenre" class="btn btn-primary rounded-pill px-4">
+            <i class="fas fa-plus me-2"></i> Thêm Thể loại
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card bg-dark text-white border-secondary shadow">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0">
+                    <thead class="bg-secondary text-uppercase small text-muted">
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th>Tên Thể loại</th>
+                            <th class="text-end pe-4">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">@item.GenreId</td>
+                                <td class="fw-bold">@item.GenreName</td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="EditGenre" asp-route-id="@item.GenreId" class="btn btn-sm btn-outline-info me-2">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="DeleteGenre" asp-route-id="@item.GenreId" method="post" class="d-inline"
+                                          onsubmit="return confirm('Bạn có chắc muốn xóa thể loại này?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
