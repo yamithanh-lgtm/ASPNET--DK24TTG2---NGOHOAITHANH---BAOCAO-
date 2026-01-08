@@ -25,7 +25,7 @@ localhost
 - [x] Tuần 4 (15/12-21/12 2025) – Bài 5: Làm việc ADO.NET và các đối tượng truy cập CSDL
 - [x] Tuần 5 (22/12-28/12 2025) – Bài 6: Làm việc với XML
 - [x] Tuần 6 (29/12-04/01 2026) – Bài 7: Sử dụng web services trong ứng dụng ASP.NET
-- [ ] Tuần 7 (05/01-11/01 2026) – Nộp Báo Cáo
+- [x] Tuần 7 (05/01-11/01 2026) – Nộp Báo Cáo
 
 ## ✨ Tiến độ thực hiện và chức năng dự kiến (cập nhật trong quá trình làm)
 - [x] Tạo giao diện người dùng nghe nhạc
@@ -33,7 +33,7 @@ localhost
 - [x] Kết nối Database
 - [x] Chức năng CRUD
 - [x] Hoàn thiện UI/UX
-- [ ] Hoàn thiện báo cáo
+- [x] Hoàn thiện báo cáo
 
 ## 📬 Liên hệ
 **Sinh viên thực hiện:**  
